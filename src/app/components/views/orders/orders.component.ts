@@ -106,7 +106,7 @@ export class OrdersComponent implements OnInit {
                 alert(`Corte salvo com sucesso!`);
                 window.location.reload();
             });
-        }, 1000);
+        }, 1500);
     }
 
     openDeleteDialog(event: any, order: Order): void {

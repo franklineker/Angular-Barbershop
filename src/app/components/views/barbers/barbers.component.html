@@ -28,7 +28,7 @@
                 <img src="data:image/png;base64,{{barber.profilePicture.data}}" alt="barber-image">
                 <span class="name">{{ barber.person.name }}</span>
             </div>
-            <div class="d-flex flex-column px-1">
+            <div class="d-flex flex-column px-1 about-wrapper">
                 <span class="d-flex text-justify about">{{ barber.about }}</span>
                 <div class="rating">
                     <div class="stars">
@@ -38,18 +38,18 @@
                         <span class="fa fa-star-o myYellow"></span>
                         <span class="fa fa-star-o myYellow"></span>
                     </div>
-                    <div>
-                        <button class="crud-buttons" name="editBarber" (click)="openForm($event, barber)">
-                            <i class="fa-regular fa-pen-to-square trash-icon"></i></button>
-                        <button class="crud-buttons" name="deleteBarber" (click)="openDeleteDialog($event, barber)">
-                            <i class="fa-solid fa-trash-can trash-icon"></i>
+                    <div class="crud-buttons">
+                        <button class="trash-icon" name="editBarber" (click)="openForm($event, barber)">
+                            <i class="fa-regular fa-pen-to-square"></i></button>
+                        <button class="trash-icon" name="deleteBarber" (click)="openDeleteDialog($event, barber)">
+                            <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <button class="plus-button" name="createBarber" (click)="openForm($event, barber)"><i
-            class="fa-solid fa-circle-plus plus-icon"></i>
+    <button class="plus-button" name="createBarber" (click)="openForm($event, barber)">
+        <i class="fa-solid fa-circle-plus plus-icon"></i>
     </button>
 </div>

@@ -7,12 +7,6 @@ export class Client {
         data: "",
         type: 0
     }
-    // person1: Person = {
-    //     name: "",
-    //     phone: "",
-    //     email: "",
-    //     address: ""
-    // }
 
     constructor(
         public userType: Number = 3,

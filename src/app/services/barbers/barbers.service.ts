@@ -4,15 +4,17 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Barber } from 'src/app/models/barber.model';
+import { Appointment } from 'src/app/models/appointment.model';
 
 @Injectable({
     providedIn: 'root',
 })
 export class BarbersService {
-    baseUrl = 'http://localhost:9000/barbers';
+    baseUrl = environment.resource_base_url + '/barbers';
     createOrUpdateResponse!: any;
     barberToDelete!: Barber;
     data!: any;
+    appointments!: Appointment[];
 
     token = '' + this.tokenService.getAccessToken();
     headers_object = new HttpHeaders({
@@ -36,7 +38,7 @@ export class BarbersService {
     }
 
     createBarber(barber: Barber): Observable<Barber> {
-        return this.http.post<Barber>(`${this.baseUrl}/save`, barber);
+        return this.http.post<Barber>(`${this.baseUrl}` + '/save', barber);
     }
 
     setBarberToDelete(barber: Barber): void {
@@ -47,21 +49,30 @@ export class BarbersService {
         return this.barberToDelete;
     }
 
-    uploadImage(id: string, file: File): Observable<FormData> {
+    uploadImage(file: File): Observable<FormData> {
         const formData = new FormData();
         formData.append('file', file);
 
+        const id = this.createOrUpdateResponse.id;
+
         return this.http.put<FormData>(
-            `${this.baseUrl}/updatePicture/${id}`,
+            `${this.baseUrl}` + `/updatePicture/${id}`,
             formData
         );
     }
 
     update(barber: Barber): Observable<Barber> {
-        return this.http.put<Barber>(`${this.baseUrl}/update/${barber.id}`, barber);
+        return this.http.put<Barber>(`${this.baseUrl}` + `/update/${barber.id}`, barber);
     }
 
     delete(id: String): Observable<Barber> {
-        return this.http.delete<Barber>(`${this.baseUrl}/delete/${id}`);
+        return this.http.delete<Barber>(`${this.baseUrl}` + `/delete/${id}`);
     }
+
+    getBestRatedBarbers(barbers: Barber[]): Barber[] {
+
+        return barbers.sort((a, b) => b.rating - a.rating);
+
+    }
+
 }

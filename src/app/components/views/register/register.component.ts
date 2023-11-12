@@ -6,6 +6,7 @@ import { User } from 'src/app/models/user.model';
 import { ClientsService } from 'src/app/services/clients/clients.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { HeaderComponent } from '../../templates/header/header.component';
+import Oauth2Service from 'src/app/services/oauth2/oauth2.service';
 
 @Component({
     selector: 'app-register',
@@ -23,7 +24,7 @@ export class RegisterComponent implements OnInit {
         private userService: UserService,
         private router: Router,
         private clientsService: ClientsService,
-        private headerComponet: HeaderComponent
+        private oauth2sevice: Oauth2Service
     ) { }
 
     ngOnInit(): void {
@@ -31,7 +32,7 @@ export class RegisterComponent implements OnInit {
     }
 
     onLogin(): void {
-        this.headerComponet.onLogin();
+        this.oauth2sevice.onLogin();
     }
 
     onSubmit(): void {

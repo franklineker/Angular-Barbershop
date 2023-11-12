@@ -89,6 +89,7 @@ import { RegisterComponent } from './components/views/register/register.componen
         AgendaComponent,
         DeleteDialogComponent,
         ProfileComponent,
+        HeaderComponent,
         { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
     ],
     bootstrap: [AppComponent],

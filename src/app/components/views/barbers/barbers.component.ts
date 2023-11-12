@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
     styleUrls: ['./barbers.component.css'],
 })
 export class BarbersComponent implements OnInit {
-    selectedFile!: File;
+    selectedImage!: File;
     barbers!: Barber[];
     barber: Barber = {
         id: '',
@@ -19,7 +19,7 @@ export class BarbersComponent implements OnInit {
         person: { name: '', email: '', phone: '', address: '' },
         rating: 0,
         about: '',
-        image: this.selectedFile,
+        image: this.selectedImage,
     };
     submitType!: string;
 
@@ -31,12 +31,11 @@ export class BarbersComponent implements OnInit {
     ngOnInit(): void {
         this.barberService.getBarbers().subscribe((barbers) => {
             this.barbers = barbers;
-            console.log(barbers);
         });
     }
 
     onSelectedImage(event: any) {
-        this.selectedFile = event.target.files[0];
+        this.selectedImage = event.target.files[0];
     }
 
     openForm(event: any, barber: Barber): void {
@@ -69,14 +68,13 @@ export class BarbersComponent implements OnInit {
         const about = $('[name=about]').val()?.toString()!;
         const email = $('[name=email]').val()?.toString()!;
 
-
         if (this.submitType == 'createBarber') {
             this.barber.person.email = email;
             this.barber.person.name = name;
             this.barber.about = about;
-            this.barber.image = this.selectedFile;
+            this.barber.image = this.selectedImage;
 
-            let barber = new Barber(1, about, this.selectedFile, this.barber.person);
+            let barber = new Barber(1, about, this.selectedImage, this.barber.person);
 
             this.barberService.createBarber(barber).subscribe((data) => {
                 this.barberService.createOrUpdateResponse = data;
@@ -84,37 +82,37 @@ export class BarbersComponent implements OnInit {
                 console.log(data);
             });
 
-            this.uploadImage(barber.id, this.selectedFile);
+            this.uploadImage(this.selectedImage);
         } else if (this.submitType == 'editBarber') {
             this.barber.person.name = name;
             this.barber.person.email = email;
             const id = this.barber.id;
 
-            if (!this.selectedFile) {
+            if (!this.selectedImage) {
                 const base64 = this.barber.profilePicture.data;
                 const imageName = 'imageName';
                 const imageBlob = this.dataURItoBlob(base64);
                 const imageFile = new File([imageBlob], imageName, {
                     type: 'image/png',
                 });
-                this.selectedFile = imageFile;
+                this.selectedImage = imageFile;
             }
 
-            let barber = new Barber(1, about, this.selectedFile, this.barber.person);
-            barber.id = id;
+            let barber = new Barber(1, about, this.selectedImage, this.barber.person);
 
             this.barberService.update(barber).subscribe((data) => {
                 this.barberService.createOrUpdateResponse = data;
                 console.log(data);
+                barber.id = id;
             });
 
-            this.uploadImage(barber.id, this.selectedFile);
+            this.uploadImage(this.selectedImage);
         }
     }
 
-    uploadImage(id: string, file: File): void {
+    uploadImage(file: File): void {
         setTimeout(() => {
-            this.barberService.uploadImage(id, file).subscribe((data) => {
+            this.barberService.uploadImage(file).subscribe((data) => {
                 alert(`Corte salvo com sucesso!`);
                 window.location.reload();
             });

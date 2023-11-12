@@ -6,6 +6,7 @@ import { ClientsService } from 'src/app/services/clients/clients.service';
 import { DeleteDialogService } from 'src/app/services/deleteDialog/delete-dialog.service';
 import { BarbersService } from 'src/app/services/barbers/barbers.service';
 import { AppointmentsService } from 'src/app/services/appointments/appointments.service';
+import { ChairsService } from 'src/app/services/chairs/chairs.service';
 
 
 @Component({
@@ -22,6 +23,7 @@ export class DeleteDialogComponent implements OnInit {
         private deleteDialogService: DeleteDialogService,
         private barbersService: BarbersService,
         private appointmentsService: AppointmentsService,
+        private chairsService: ChairsService,
         private dialog: MatDialog
     ) { }
 
@@ -67,6 +69,12 @@ export class DeleteDialogComponent implements OnInit {
                 $("#deleteTitle").text("Excluir Agendamento")
                 $("#deleteQuestion").text(`${baseString}` + "agendamento?")
                 break
+
+            case "deleteChair":
+                $("#deleteTitle").text("Excluir Cadeira")
+                $("#deleteQuestion").text(`${baseString}` + "cadeira?")
+                break
+
         }
     }
 
@@ -136,6 +144,22 @@ export class DeleteDialogComponent implements OnInit {
                     )
                 } else {
                     alert("Não foi possível excluir esse agendamento");
+                    window.location.reload();
+                }
+                break
+
+            case "deleteChair":
+
+                const chair = this.chairsService.getChairToDelete();
+
+                if (chair) {
+                    this.chairsService.deleteChair(chair.id!).subscribe(data => {
+                        alert("Cadeira excluída com sucesso!");
+                        window.location.reload();
+                    }
+                    )
+                } else {
+                    alert("Não foi possível excluir essa cadeira");
                     window.location.reload();
                 }
         }

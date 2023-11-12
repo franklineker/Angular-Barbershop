@@ -23,7 +23,14 @@
                             Logout
                         </button>
                     </li>
-                    <li><a class="signin-button" routerLink="profile" (click)="toggleUserMenu()">Meu Perfil</a></li>
+                    <li>
+                        <a class="signin-button" routerLink="profile" (click)="toggleUserMenu()" *ngIf="isLogged">
+                            Meu Perfil
+                        </a>
+                        <a class="signin-button" routerLink="register" (click)="toggleUserMenu()" *ngIf="!isLogged">
+                            Registre-se
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

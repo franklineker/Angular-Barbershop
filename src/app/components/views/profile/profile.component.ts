@@ -135,11 +135,11 @@ export class ProfileComponent implements OnInit {
         }
         const id = this.client.id;
         const barberID = this.barber.id;
-        const name = $("[name=userName]").val()?.toString()!;
-        const email = $("[name=userEmail]").val()?.toString()!;
-        const phone = $("[name=userPhone]").val()?.toString()!;
-        const address = $("[name=userAddress]").val()?.toString()!;
-        const about = $("[name=about]").val()?.toString()!;
+        const name = $("[name=userName]").val()!.toString()!;
+        const email = $("[name=userEmail]").val()!.toString()!;
+        const phone = $("[name=userPhone]").val()!.toString()!;
+        const address = $("[name=userAddress]").val()!.toString()!;
+        const about = $("[name=about]").val()!.toString()!;
         const person: Person = {
             name: name,
             email: email,
@@ -177,7 +177,7 @@ export class ProfileComponent implements OnInit {
             }, 500);
         } else if (this.isBarber) {
             setTimeout(() => {
-                this.barberService.uploadImage(id, file).subscribe(data => {
+                this.barberService.uploadImage(file).subscribe(data => {
                     alert("Barbeiro salvo com sucesso");
                     window.location.reload();
                 })

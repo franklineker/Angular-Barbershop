@@ -39,7 +39,8 @@
                 </h2>
                 <div [ngClass]="{'collapsed': collapsedClients[i]}">
                     <div class="item-body">
-                        <span>Nome: {{client.person.email}}</span>
+                        <span>Nome: {{client.person.name}}</span>
+                        <span>E-mail: {{client.person.email}}</span>
                         <span>Telefone: {{client.person.phone}}</span>
                         <span>Endereço: {{client.person.address}}</span>
                         <div class="d-flex justify-content-end">

@@ -141,8 +141,10 @@ export class AgendaComponent implements OnInit {
             (order) => order.title == this.selectedOrderTitle
         )[0];
         let client = this.clients.filter(
-            (client) => client.person.email == this.tokenService.getUserEmail()
+            (client) =>
+                client.person.email == this.tokenService.getUserEmail()
         )[0];
+
 
         let day = this.selectedDate.getDate().toString();
         let month = (this.selectedDate.getMonth() + 1).toString();
