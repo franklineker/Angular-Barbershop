@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, catchError, filter, map, of, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Client } from 'src/app/models/client.model';
@@ -26,6 +26,41 @@ export class ClientsService {
             callback(client);
         });
 
+    }
+
+    getClientByEmail(email: string): Observable<Client | null> {
+        return this.findClients().pipe(
+            switchMap(clients => {
+                const client = clients.find(c => c.person.email === email);
+
+                if (client) {
+                    return of(client);
+                } else {
+                    // Se o cliente não for encontrado, você pode escolher entre lançar uma exceção ou retornar um valor padrão
+                    // Exemplo de lançamento de exceção:
+                    // return throwError(new Error('Cliente não encontrado'));
+
+                    // Ou exemplo de retorno de valor padrão (pode ser null, undefined ou um cliente padrão, dependendo do seu caso):
+                    return of(null);
+                }
+            }),
+            catchError(error => {
+                // Trate erros da requisição HTTP, se necessário
+                console.error('Erro na requisição HTTP', error);
+                return of(null);
+            }),
+            map(client => {
+                if (client === null) {
+                    // Se o cliente for null, você pode lançar uma exceção ou retornar um valor padrão aqui
+                    // Exemplo de lançamento de exceção:
+                    // throw new Error('Cliente não encontrado');
+
+                    // Ou exemplo de retorno de valor padrão (pode ser null, undefined ou um cliente padrão, dependendo do seu caso):
+                    return null;
+                }
+                return client;
+            })
+        );
     }
 
     setClientToDelete(client: Client): void {

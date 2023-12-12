@@ -38,7 +38,6 @@ export class OrdersComponent implements OnInit {
     ngOnInit(): void {
         this.orderService.getOrders().subscribe((orders) => {
             this.orders = orders;
-            console.log(orders);
         });
         this.getAdmin();
     }
@@ -72,17 +71,15 @@ export class OrdersComponent implements OnInit {
         this.selectedFile = event.target.files[0];
     }
 
-    onSubmit(): void {
+    onSubmit() {
         const title = $('[name=title]').val()?.toString()!;
         const price = +$('[name=price]').val()!;
         const description = $('[name=description]').val()?.toString()!;
 
         if (this.submitType == 'createOrder') {
             this.order = new Order(title, price, description, this.selectedFile);
-            console.log(this.selectedFile);
             this.orderService.createOrder(this.order).subscribe((data) => {
                 this.orderService.createOrUpdateResponse = data;
-                console.log(data);
             });
 
             this.uploadImage(this.selectedFile);
@@ -93,20 +90,17 @@ export class OrdersComponent implements OnInit {
 
             this.orderService.update(id, order).subscribe((data) => {
                 this.orderService.createOrUpdateResponse = data;
+                this.uploadImage(this.selectedFile);
             });
 
-            this.uploadImage(this.selectedFile);
         }
     }
 
     uploadImage(file: File): void {
-        setTimeout(() => {
-            this.orderService.uploadImage(file).subscribe((data) => {
-                console.log(data);
-                alert(`Corte salvo com sucesso!`);
-                window.location.reload();
-            });
-        }, 1500);
+        this.orderService.uploadImage(file).subscribe((data) => {
+            alert(`Corte salvo com sucesso!`);
+            window.location.reload();
+        });
     }
 
     openDeleteDialog(event: any, order: Order): void {
@@ -120,6 +114,5 @@ export class OrdersComponent implements OnInit {
 
     getAdmin(): void {
         this.isAdmin = this.tokenService.isAdmin();
-        console.log('isAdmin =' + this.isAdmin);
     }
 }

@@ -27,7 +27,6 @@ export class OrdersService {
     constructor(private http: HttpClient, private tokenService: TokenService) { }
 
     getOrders(): Observable<Order[]> {
-        console.log(this.httpOptions);
         return this.http.get<Order[]>(this.baseUrl);
     }
 

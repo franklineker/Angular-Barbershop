@@ -24,7 +24,7 @@ export class AgendaService {
 
     constructor(private http: HttpClient, private tokenService: TokenService) { }
 
-    setAppointment(appointment: Appointment): Observable<Appointment> {
+    setAppointment(appointment: any): Observable<Appointment> {
         return this.http.post<Appointment>(
             `${this.baseUrl}` + '/save',
             appointment

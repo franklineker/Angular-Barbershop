@@ -5,19 +5,20 @@
             <div class="item">
                 <h2 class="item-header" (click)="toggleCollapse(i)">
                     <button class="item-button" type="button">
-                        {{appointment.clientName}}
+                        {{appointment.client.person.name}}
                     </button>
-                    <i class="fa-solid fa-chevron-down" *ngIf="collapsedAppointments[i]"></i>
-                    <i class="fa-solid fa-chevron-up" *ngIf="!collapsedAppointments[i]"></i>
+                    <i class="fa-solid fa-chevron-down up-down-arrow" *ngIf="collapsedAppointments[i]"></i>
+                    <i class="fa-solid fa-chevron-up up-down-arrow" *ngIf="!collapsedAppointments[i]"></i>
 
                 </h2>
                 <div [ngClass]="{'collapsed': collapsedAppointments[i]}">
                     <div class="item-body">
-                        <span>Data: {{appointment.date}}</span>
-                        <span>Hora: {{appointment.hour}}</span>
-                        <span>Barbeiro: {{appointment.barberName}}</span>
-                        <span>Corte: {{appointment.orderTitle}}</span>
-                        <button class="plus-button mb-2" name="deleteAppointment"
+                        <span>Data: {{appointment.formatedDate}}</span>
+                        <span>Hora:
+                            {{appointment.formatedHour.split(":")[0]+":"+appointment.formatedHour.split(":")[1]}}</span>
+                        <span>Barbeiro: {{appointment.barber.person.name}}</span>
+                        <span>Corte: {{appointment.order.title}}</span>
+                        <button class="plus-button" name="deleteAppointment"
                             (click)="openDeleteDialog($event, appointment)">
                             <i class="fa-solid fa-trash-can trash-icon"></i>
                         </button>

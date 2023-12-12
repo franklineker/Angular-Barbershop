@@ -5,13 +5,13 @@
             (ngSubmit)="onSubmit()" novalidate>
             <h2></h2>
             <label for="email"><b>E-mail</b></label>
-            <input type="text" placeholder="Digite o nome" id="email" name="email" required
-                [ngModel]="barber.person.email">
+            <input type="text" placeholder="Digite o nome" id="email" name="email" disabled
+                [(ngModel)]="barber.person.email">
             <label for="title"><b>Nome</b></label>
             <input type="text" placeholder="Digite o nome" id="name" name="name" required
-                [ngModel]="barber.person.name">
+                [(ngModel)]="barber.person.name">
             <label for="about"><b>Sobre</b></label>
-            <input type="text" placeholder="Digite o preço" id="about" name="about" required [ngModel]="barber.about">
+            <input type="text" placeholder="Digite o preço" id="about" name="about" required [(ngModel)]="barber.about">
             <label for="image"><b>Foto</b></label>
             <br>
             <input type="file" placeholder="Anexe uma foto" id="image" name="image" (change)="onSelectedImage($event)"
@@ -23,22 +23,31 @@
         </form>
     </div>
     <div class="overflow-auto">
-        <div class="barber" *ngFor="let barber of barbers">
-            <div class="d-flex flex-column">
+        <div class="barber d-flex flex-column" *ngFor="let barber of barbers">
+            <div class="d-flex">
                 <img src="data:image/png;base64,{{barber.profilePicture.data}}" alt="barber-image">
-                <span class="name">{{ barber.person.name }}</span>
+                <div class="d-flex text-justify about">{{ barber.about }}</div>
             </div>
-            <div class="d-flex flex-column px-1 about-wrapper">
-                <span class="d-flex text-justify about">{{ barber.about }}</span>
-                <div class="rating">
-                    <div class="stars">
-                        <span class="fa-solid fa-star myYellow"></span>
-                        <span class="fa-solid fa-star myYellow"></span>
-                        <span class="fa fa-star-half-stroke myYellow"></span>
-                        <span class="fa fa-star-o myYellow"></span>
-                        <span class="fa fa-star-o myYellow"></span>
+            <div class="d-flex flex-column">
+                <div class="d-flex">
+                    <span class="name">{{ barber.person.name }}</span>
+                    <div class="rating px-1">
+                        <div class="stars justify-self-center">
+                            <span class="fa-solid fa-star myYellow"></span>
+                        </div>
+                        <span class="mx-1" (click)="rateBarber(barber.id)"
+                            *ngIf="barber.currentRating > 0">{{barber.currentRating.toFixed(1).replace(".", ",")}}
+                            ({{barber.ratingsArray.length}})
+                        </span>
+                        <button class="mx-1 first-rating" id="a{{barber.id}}" (click)="toggleRatingBox(barber.id)"
+                            *ngIf="barber.currentRating > 0 && isLogged">Avaliar
+                        </button>
+                        <button class="mx-1 first-rating" id="a{{barber.id}}" (click)="toggleRatingBox(barber.id)"
+                            *ngIf="barber.currentRating == 0 && isLogged">Seja
+                            o primeiro a avaliar!
+                        </button>
                     </div>
-                    <div class="crud-buttons">
+                    <div class="crud-buttons d-flex justify-content-between" *ngIf="isAdmin">
                         <button class="trash-icon" name="editBarber" (click)="openForm($event, barber)">
                             <i class="fa-regular fa-pen-to-square"></i></button>
                         <button class="trash-icon" name="deleteBarber" (click)="openDeleteDialog($event, barber)">
@@ -47,9 +56,25 @@
                     </div>
                 </div>
             </div>
+            <form #ratingForm id="a{{barber.id}}" *ngIf="formStates[barber.id]" class="rateBarberBox">
+                <h3>Avalie este barbeiro:</h3>
+                <img src="data:image/png;base64,{{barber.profilePicture.data}}" alt="barber-picture">
+                <div class="py-3">
+                    <i [ngClass]="star.class + ' fa-star mx-1 star'" (click)="getRating($event)"
+                        *ngFor="let star of stars" id="{{star.id}}"></i>
+                </div>
+                <div class="d-flex">
+                    <button class="btn rate-button mx-3" (click)="toggleRatingBox(barber.id)">
+                        <b>Fechar</b>
+                    </button>
+                    <button type="submit" class="btn rate-button mx-3" (click)="rateBarber(barber.id)">
+                        <b>Enviar</b>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-    <button class="plus-button" name="createBarber" (click)="openForm($event, barber)">
+    <button class="plus-button" name="createBarber" (click)="openForm($event, barber)" *ngIf="isAdmin">
         <i class="fa-solid fa-circle-plus plus-icon"></i>
     </button>
 </div>

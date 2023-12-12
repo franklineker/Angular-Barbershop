@@ -56,7 +56,7 @@ export class BarbersService {
         const id = this.createOrUpdateResponse.id;
 
         return this.http.put<FormData>(
-            `${this.baseUrl}` + `/updatePicture/${id}`,
+            this.baseUrl + `/updatePicture/${id}`,
             formData
         );
     }
@@ -71,8 +71,12 @@ export class BarbersService {
 
     getBestRatedBarbers(barbers: Barber[]): Barber[] {
 
-        return barbers.sort((a, b) => b.rating - a.rating);
+        return barbers.sort((a, b) => b.currentRating - a.currentRating);
 
+    }
+
+    rateBarber(id: string, rating: { clientId: string, rating: number }): Observable<Barber> {
+        return this.http.put<Barber>(this.baseUrl + `/rating/${id}`, rating);
     }
 
 }

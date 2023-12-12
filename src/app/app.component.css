@@ -1,36 +1,36 @@
-
 app-header {
-  grid-area: 'app-header';
-  position: fixed;
-  z-index: 1;
-  width: 100%;
-  height: 60px;
+    grid-area: 'app-header';
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+    height: 60px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 img {
-  position: absolute;
-  opacity: 0.4;
-  width: 100%;
-  height: 590px;
-  top: 60px;
+    position: absolute;
+    opacity: 0.4;
+    width: 100%;
+    height: 590px;
+    top: 60px;
 }
 
 app-main {
-  grid-area: 'app-main';
-  position: relative;
-  display: block;
-  height: 590px;
-  top: 60px;
+    grid-area: 'app-main';
+    position: relative;
+    display: block;
+    height: 590px;
+    top: 60px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 
 }
 
 app-footer {
-  grid-area: 'app-footer';
-  position: relative;
-  width: 100%;
-  height: 400px;
-  background-color: black;
-  top: 60px;
+    grid-area: 'app-footer';
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background-color: black;
+    top: 60px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
-
-

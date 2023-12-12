@@ -24,13 +24,13 @@
             <input type="text" placeholder="Digite o email" id="email" name="userEmail" required
                 [(ngModel)]="client.person.email" disabled *ngIf="isClient">
 
-            <label for="name"><b>Nome</b></label>
+            <label for="name" *ngIf="!isAdmin"><b>Nome</b></label>
             <input type="text" placeholder="Digite o nome" id="name" name="userName" required
                 [(ngModel)]="barber.person.name" *ngIf="isBarber">
             <input type="text" placeholder="Digite o nome" id="name" name="userName" required
                 [(ngModel)]="client.person.name" *ngIf="isClient">
 
-            <label for="phone"><b>Phone</b></label>
+            <label for="phone" *ngIf="!isAdmin"><b>Phone</b></label>
             <input type="text" placeholder="Digite o preço" id="phone" name="userPhone" required
                 [(ngModel)]="barber.person.phone" *ngIf="isBarber">
             <input type="text" placeholder="Digite o preço" id="phone" name="userPhone" required
@@ -42,14 +42,13 @@
                     [(ngModel)]="barber.about">{{barber.about}}</textarea>
             </div>
 
-            <label for="address"><b>Endereço</b></label>
+            <label for="address" *ngIf="!isAdmin"><b>Endereço</b></label>
             <input type="text" placeholder="Digite o preço" id="address" name="userAddress" required
                 [(ngModel)]="barber.person.address" *ngIf="isBarber">
             <input type="text" placeholder="Digite o preço" id="address" name="userAddress" required
                 [(ngModel)]="client.person.address" *ngIf="isClient">
 
-            <button type="submit" class="btn" (click)="onSubmit()" *ngIf="!isAdmin"><input type="submit"
-                    value="Salvar"></button>
+            <button type="submit" class="btn" (click)="onSubmit()"><input type="submit" value="Salvar"></button>
         </form>
     </div>
 </div>

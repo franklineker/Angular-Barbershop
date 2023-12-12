@@ -1,5 +1,7 @@
+import { HomeService } from './../../../services/home/home.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Home } from 'src/app/models/home.model';
 import { TokenService } from 'src/app/services/token/token.service';
 
 @Component({
@@ -9,15 +11,34 @@ import { TokenService } from 'src/app/services/token/token.service';
 })
 export class HomeComponent implements OnInit {
     isLogged!: boolean;
+    welcomeMessage = "";
+    isEditMessageEnabled = false;
+    isAdmin!: boolean;
 
     constructor(
-        private route: ActivatedRoute,
-        private router: Router,
-        private tokenService: TokenService
+        private tokenService: TokenService,
+        private homeService: HomeService
     ) { }
 
     ngOnInit(): void {
         this.isLogged = this.tokenService.isLogged();
-        console.log(this.isLogged)
+        this.isAdmin = this.tokenService.isAdmin();
+        this.homeService.get().subscribe(data => {
+            this.welcomeMessage = data.welcomeMessage;
+        });
+    }
+
+    toogleTextArea() {
+        this.isEditMessageEnabled = !this.isEditMessageEnabled;
+    }
+
+    setMessage() {
+        const homeAttrs = { welcomeMessage: this.welcomeMessage, aboutBarbershop: null };
+        const home = new Home();
+        home.welcomeMessage = this.welcomeMessage;
+        this.homeService.save(home).subscribe(data => {
+            alert("Mensagem atualizada com sucesso!");
+            window.location.reload();
+        });
     }
 }

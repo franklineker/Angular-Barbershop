@@ -1,103 +1,100 @@
 * {
-  color: white;
+    color: white;
 }
 
 .contact-wrapper {
-  display: flex;
-  height: 590px;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    height: 590px;
+    justify-content: center;
+    align-items: center;
 }
 
 form {
-  display: flex;
-  width: 300px;
-  position: relative;
-  flex-direction: column;
-  background: rgba(0, 0, 0, 0.7);
-  height: 480px;
-  padding: 20px 30px;
+    display: flex;
+    width: 300px;
+    position: relative;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.7);
+    height: 480px;
+    padding: 20px 30px;
 
 }
 
 h1 {
-  font-size: 18px;
+    font-size: 18px;
 }
 
 h2 {
-  font-size: 12px;
-  line-height: 0px;
-  margin-bottom: 30px;
+    font-size: 12px;
+    line-height: 0px;
+    margin-bottom: 30px;
+}
+
+label {
+    font-size: 12px;
 }
 
 input {
-  background: rgba(0, 0, 0, 0.0);
-  border: none;
-  border-bottom: 3px solid white;
-  margin-bottom: 5px;
+    background: rgba(0, 0, 0, 0.0);
+    margin-bottom: 5px;
+    border: solid 2px white;
+    border-radius: 5px;
+}
+
+.is-invalid {
+    border: 2px solid #dc3545;
+    box-shadow: 0 0 7px rgba(220, 53, 69, 0.5);
+}
+
+input:-webkit-autofill {
+    -webkit-text-fill-color: white !important;
+    -webkit-box-shadow: 0 0 0px 1000px rgba(0, 0, 0, 1) inset;
 }
 
 .text-camp {
-  background: rgba(0, 0, 0, 0);
-  border: none;
-  border-bottom: solid white 2px;
-  font-size: 12px;
+    background: rgba(0, 0, 0, 0);
+    border: none;
+    border-bottom: solid white 2px;
+    font-size: 12px;
 }
 
-input:-webkit-autofill{
-  -webkit-text-fill-color: white !important;
-  -webkit-box-shadow: 0 0 0px 1000px rgba(0, 0, 0, 0.9) inset;
+textarea {
+    height: 100px;
+    background: rgba(0, 0, 0, 0.0);
+    border: solid 2px white;
+    border-radius: 5px;
+    margin-bottom: 10px;
 }
 
-textarea[name='message'] {
-  display: flex;
-  position: relative;
-  height: 65px;
-  flex-wrap: wrap;
-  background: rgba(0, 0, 0, 0.0);
-  border: none;
-  border-bottom: 3px solid white;
-  margin-bottom: 10px;
-}
-
-input[value='Enviar'] {
-  display: flex;
-  width: 152.14px;
-  height: 41.3px;
-  margin-top: 20px;
-  background-color: #FFCE2E;
-  color: black;
-  border-radius: 15px;
-  align-self: center;
-  align-items: center;
-  justify-content: center;
-  font-weight: bolder;
-  font-size: 18px;
+button[type='submit'] {
+    background-color: #FFCE2E;
+    color: black;
+    margin: 10px 0;
+    font-weight: 500;
 }
 
 .input-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    width: 60%;
+    align-self: center;
 }
 
-.attachment{
-  position: relative;
-  left: 15px;
-  height: 50px;
-  width: 145px;
-  overflow: hidden;
-  align-self: center;
-}
-#input-file {
-  position: relative;
-  right: 93px;
-  margin: 0;
-  border: none;
-  font-size: 10px;
-}
+/* .attachment {
+    overflow: hidden;
+    align-self: center;
+    width: 50%;
+} */
 
-[value='Enviar']{
-  border: none  ;
+/* #input-file {
+    position: relative;
+    right: 92px;
+    border: none;
+    font-size: 10px;
+} */
+
+[value='Enviar'] {
+    border: none;
 }

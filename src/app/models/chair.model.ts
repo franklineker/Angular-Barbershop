@@ -3,14 +3,13 @@ import { Barber } from "./barber.model";
 export class Chair {
     id?: string;
     customId?: number;
-    // barber: Barber
-    // startDate: string
-    // endDate: string
+    formatedStartDate?= "";
+    formatedEndDate?= "";
 
     constructor(
-        public barberName: string,
-        public startDate: string,
-        public endDate: string
+        public barber: Barber = new Barber(),
+        public startDate: Date | undefined = new Date(),
+        public endDate: Date | undefined = new Date()
     ) { }
 
 }

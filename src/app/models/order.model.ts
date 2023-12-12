@@ -1,17 +1,17 @@
 export class Order {
 
-  id!: String
+    id!: string
 
-  image!: {
-    data: String,
-    type: Number
-  }
+    image!: {
+        data: string,
+        type: number
+    }
 
-  constructor(
-    public title: String,
-    public price: Number,
-    public description: String,
-    public uploadedImage?: File
-  ) { }
+    constructor(
+        public title: string,
+        public price: number,
+        public description: string,
+        public uploadedImage?: File
+    ) { }
 
 }

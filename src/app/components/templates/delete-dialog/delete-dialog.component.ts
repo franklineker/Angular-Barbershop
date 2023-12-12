@@ -1,3 +1,4 @@
+import { CommentsService } from './../../../services/comments/comments.service';
 import { OrdersService } from './../../../services/orders/orders.service';
 import * as $ from 'jquery';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -24,6 +25,7 @@ export class DeleteDialogComponent implements OnInit {
         private barbersService: BarbersService,
         private appointmentsService: AppointmentsService,
         private chairsService: ChairsService,
+        private commentsService: CommentsService,
         private dialog: MatDialog
     ) { }
 
@@ -74,6 +76,12 @@ export class DeleteDialogComponent implements OnInit {
                 $("#deleteTitle").text("Excluir Cadeira")
                 $("#deleteQuestion").text(`${baseString}` + "cadeira?")
                 break
+
+            case "deleteComment":
+                $("#deleteTitle").text("Excluir Comentário")
+                $("#deleteQuestion").text(`${baseString}` + "comentário?")
+                break
+
 
         }
     }
@@ -162,6 +170,23 @@ export class DeleteDialogComponent implements OnInit {
                     alert("Não foi possível excluir essa cadeira");
                     window.location.reload();
                 }
+                break;
+
+            case "deleteComment":
+
+                const comment = this.commentsService.getCommentToDelete();
+                console.log(comment)
+
+                if (comment) {
+                    this.commentsService.delete(comment.id!).subscribe(data => {
+                        alert("Comentário excluído com sucesso!");
+                        window.location.reload();
+                    })
+                } else {
+                    alert("Não foi possível excluir este comentário.");
+                    window.location.reload();
+                }
+                break;
         }
     }
 

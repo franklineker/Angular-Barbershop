@@ -1,14 +1,14 @@
+import { Barber } from "./barber.model"
+import { Client } from "./client.model";
+import { Order } from "./order.model"
 
 export interface Appointment {
 
-    id?: String
-    barberID?: String
-    barberName: String
-    clientID?: String
-    clientName: String
-    orderID?: String
-    orderTitle: String
-    date: String
-    hour: String
-
+    id?: string
+    order: Order
+    barber: Barber
+    client: Client
+    date: string
+    formatedDate: string
+    formatedHour: string
 }

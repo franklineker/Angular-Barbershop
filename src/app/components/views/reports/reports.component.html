@@ -1,57 +1,96 @@
 <div class="report-wrapper">
-    <h1 class="text-center my-3">Relatório</h1>
-    <select class="my-select" id="report-type" (change)="switchReportType($event)">
-        <option>Selecione o tipo de relatório</option>
-        <option value="best-orders">Cortes mais vendidos</option>
-        <option value="best-rated-barbers">Barbeiros mais bem avaliados</option>
-        <option value="best-barbers">Barbeiros com mais atendimentos</option>
-    </select>
-    <div class="chart" *ngIf="isBestOrdersSelected">
-        <div class="simple-bar-chart  my-4">
-            <div class="item" style="--clr: #FFCE2E; --val: {{getQuantityByArrayIndex(1)}}">
-                <div class="value">{{getQuantityByArrayIndex(1)}}</div>
-                <div class="label">{{bestSellersOrders[1][0]}}</div>
-            </div>
-            <div class="item" style="--clr: #FFCE2E; --val: {{getQuantityByArrayIndex(0)}}">
-                <div class="value">{{getQuantityByArrayIndex(0)}}</div>
-                <div class="label">{{bestSellersOrders[0][0]}}</div>
-            </div>
-            <div class="item" style="--clr: #FFCE2E; --val: {{getQuantityByArrayIndex(2)}}">
-                <div class="value">{{getQuantityByArrayIndex(2)}}</div>
-                <div class="label">{{bestSellersOrders[2][0]}}</div>
+    <div class="text-center my-5 d-flex justify-content-between">
+        <h1 class="m-0">Relatório</h1>
+        <button class="btn export-button" (click)="exportXlsx()">Exportar</button>
+    </div>
+    <div class="report-type text-center" (click)="switchReportType($event)">
+        <span id="report-title">Selecione o tipo de relatório</span>
+        <i class="fa-solid fa-caret-down"></i>
+    </div>
+    <ul class="report-type-list flex-column" [ngClass]="{'collapse': isTypeCollapsed}" id="report-type">
+        <li style="width: 100%;" (click)="switchReportType($event)" id="best-orders">Cortes mais vendidos no mês</li>
+        <li style="width: 100%;" (click)="switchReportType($event)" id="best-rated-barbers">Barbeiros mais bem
+            avaliados
+        </li>
+        <li style="width: 100%;" (click)="switchReportType($event)" id="best-barbers">Barbeiros com mais atendimentos no
+            mês
+        </li>
+        <li style="width: 100%;" (click)="switchReportType($event);getDateAndPrice()" id="incomesPerDay">
+            Receita dos últimos 7 dias
+        </li>
+        <li style="width: 100%;" (click)="switchReportType($event); getLastDaysAppointments()"
+            id="activityOfLastSevenDays">
+            Nº de Atendimentos dos últimos 7 dias
+        </li>
+    </ul>
+    <div>
+        <div class="chart" *ngIf="isBestOrdersSelected">
+            <div class="simple-bar-chart  my-4">
+                <div class="item" style="--clr: #FFCE2E; --val: {{getQuantityByArrayIndex(0)}}">
+                    <div class="value">{{getQuantityByArrayIndex(0)}}</div>
+                    <div class="label">{{bestSellersOrders[0][0]}}</div>
+                </div>
+                <div class="item" style="--clr: #FFCE2E; --val: {{getQuantityByArrayIndex(1)}}">
+                    <div class="value">{{getQuantityByArrayIndex(1)}}</div>
+                    <div class="label">{{bestSellersOrders[1][0]}}</div>
+                </div>
+                <div class="item" style="--clr: #FFCE2E; --val: {{getQuantityByArrayIndex(2)}}">
+                    <div class="value">{{getQuantityByArrayIndex(2)}}</div>
+                    <div class="label">{{bestSellersOrders[2][0]}}</div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="chart" *ngIf="isBestRatedBarberSelected">
-        <div class="simple-bar-chart  my-4">
-            <div class="item" style="--clr: #FFCE2E; --val: {{barberNumber2.rating * 10}}">
-                <div class="value">{{barberNumber2.rating.toFixed(1)}}</div>
-                <div class="label">{{barberNumber2.person.name}}</div>
-            </div>
-            <div class="item" style="--clr: #FFCE2E; --val: {{barberNumber1.rating * 10}}">
-                <div class="value">{{barberNumber1.rating.toFixed()}}</div>
-                <div class="label">{{barberNumber1.person.name}}</div>
-            </div>
-            <div class="item" style="--clr: #FFCE2E; --val: {{barberNumber3.rating * 10}};">
-                <div class="value">{{barberNumber3.rating.toFixed(1)}}</div>
-                <div class="label">{{barberNumber3.person.name}}</div>
+        <div class="chart" *ngIf="isBestRatedBarberSelected">
+            <div class="simple-bar-chart  my-4">
+                <div class="item" style="--clr: #FFCE2E; --val: {{barberNumber1.currentRating * 10}}">
+                    <div class="value">{{barberNumber1.currentRating.toFixed()}}</div>
+                    <div class="label">{{barberNumber1.person.name}}</div>
+                </div>
+                <div class="item" style="--clr: #FFCE2E; --val: {{barberNumber2.currentRating * 10}}">
+                    <div class="value">{{barberNumber2.currentRating.toFixed(1)}}</div>
+                    <div class="label">{{barberNumber2.person.name}}</div>
+                </div>
+                <div class="item" style="--clr: #FFCE2E; --val: {{barberNumber3.currentRating * 10}};">
+                    <div class="value">{{barberNumber3.currentRating.toFixed(1)}}</div>
+                    <div class="label">{{barberNumber3.person.name}}</div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="chart" *ngIf="isBestBarbersSelected">
-        <div class="simple-bar-chart  my4">
-            <div class="item" style="--clr: #FFCE2E; --val: {{mostChosenBarbers[1].length}}">
-                <div class="value">{{mostChosenBarbers[1].length}}</div>
-                <div class="label">{{mostChosenBarbers[1][0]}}</div>
+        <div class="chart" *ngIf="isBestBarbersSelected">
+            <div class="simple-bar-chart  my4">
+                <div class="item" style="--clr: #FFCE2E; --val: {{mostChosenBarbers[0].length}}">
+                    <div class="value">{{mostChosenBarbers[0].length}}</div>
+                    <div class="label">{{mostChosenBarbers[0][0]}}</div>
+                </div>
+                <div class="item" style="--clr: #FFCE2E; --val: {{mostChosenBarbers[1].length}}">
+                    <div class="value">{{mostChosenBarbers[1].length}}</div>
+                    <div class="label">{{mostChosenBarbers[1][0]}}</div>
+                </div>
+                <div class="item" style="--clr: #FFCE2E; --val: {{mostChosenBarbers[2].length}}">
+                    <div class="value">{{mostChosenBarbers[2].length}}</div>
+                    <div class="label">{{mostChosenBarbers[2][0]}}</div>
+                </div>
             </div>
-            <div class="item" style="--clr: #FFCE2E; --val: {{mostChosenBarbers[0].length}}">
-                <div class="value">{{mostChosenBarbers[0].length}}</div>
-                <div class="label">{{mostChosenBarbers[0][0]}}</div>
+        </div>
+        <div class="chart" *ngIf="isIncomePerDaySeleceted">
+            <div class="simple-bar-chart  my4">
+                <div class="item" style="--clr: #FFCE2E; --val: {{dateAndPrice[1] / 50}}"
+                    *ngFor="let dateAndPrice of dateAndPriceArray.slice(0,7)">
+                    <div class="value">{{dateAndPrice[1].toFixed(2)}}</div>
+                    <div class="label">{{dateAndPrice[0]}}</div>
+                </div>
             </div>
-            <div class="item" style="--clr: #FFCE2E; --val: {{mostChosenBarbers[2].length}}">
-                <div class="value">{{mostChosenBarbers[2].length}}</div>
-                <div class="label">{{mostChosenBarbers[2][0]}}</div>
+            <div class="my-4 text-center">Dia do mês</div>
+        </div>
+        <div class="chart" *ngIf="isActivityOfLastSevenDaysSelected">
+            <div class="simple-bar-chart  my4">
+                <div class="item" style="--clr: #FFCE2E; --val: {{dateAndAppointments[1].length}}"
+                    *ngFor="let dateAndAppointments of lastDaysAppointments">
+                    <div class="value">{{dateAndAppointments[1].length}}</div>
+                    <div class="label">{{dateAndAppointments[0].getDate()}}</div>
+                </div>
             </div>
+            <div class="my-4 text-center">Dia do mês</div>
         </div>
     </div>
 </div>

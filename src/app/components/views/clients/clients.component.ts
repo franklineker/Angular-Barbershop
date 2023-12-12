@@ -11,20 +11,7 @@ import { ClientsService } from 'src/app/services/clients/clients.service';
 export class ClientsComponent implements OnInit {
 
     clients!: Client[];
-    client: Client = {
-        id: "",
-        userType: 3,
-        image: {
-            data: "",
-            type: 0
-        },
-        person: {
-            name: "",
-            phone: "",
-            email: "",
-            address: ""
-        }
-    };
+    client: Client = new Client();
     submitType!: any;
     collapsedClients!: boolean[];
 
@@ -50,13 +37,14 @@ export class ClientsComponent implements OnInit {
 
         if (buttonName == "editClient") {
             this.submitType = "editClient";
-            $(".form-title").text("Editar Cliente");
+            $("#form-title").text("Editar Cliente");
             this.client = client!;
             document.getElementById("myForm")!.style.display = "block";
 
         } else if (buttonName == "createClient") {
+            this.client = new Client();
             this.submitType = "createClient";
-            $("h2").text("Criar Cliente");
+            $("#form-title").text("Criar Cliente");
             $("form[name='clientForm']")
                 .find("[type='text'").val("").end()
                 .find("[type='number']").val("");
@@ -70,30 +58,24 @@ export class ClientsComponent implements OnInit {
     }
 
     onSubmit(): void {
-        const name = $('[name=name]').val()?.toString()!;
-        const phone = +$('[name=phone]').val()!;
-        const address = $('[name=address]').val()?.toString()!;
 
-        // if (this.submitType == 'createOrder') {
-        //     this.order = new Order(title, price, description, this.selectedFile);
-        //     console.log(this.selectedFile);
-        //     this.orderService.createOrder(this.order).subscribe((data) => {
-        //         this.orderService.createOrUpdateResponse = data;
-        //         console.log(data);
+        // if (this.submitType == 'createClient') {
+        //     const client = new Client(3, this.client.person);
+        //     this.clientsService.create(this.client).subscribe(data => {
+        //         alert("Cliente criado com sucesso!");
+        //         window.location.reload();
         //     });
 
-        //     this.uploadImage(this.selectedFile);
-        // } else if (this.submitType == 'editOrder') {
-        //     const id = this.order.id;
+        // } else
+        if (this.submitType == 'editClient') {
+            let client = new Client(3, this.client.person);
+            client.id = this.client.id;
 
-        //     const order = new Order(title, price, description, this.selectedFile);
-
-        //     this.orderService.update(id, order).subscribe((data) => {
-        //         this.orderService.createOrUpdateResponse = data;
-        //     });
-
-        //     this.uploadImage(this.selectedFile);
-        // }
+            this.clientsService.update(client).subscribe(data => {
+                alert("Cliente atualizado com sucesso!");
+                window.location.reload();
+            })
+        }
     }
 
     openDeleteDialog(event: any, client: Client): void {

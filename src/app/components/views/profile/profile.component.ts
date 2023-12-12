@@ -1,4 +1,3 @@
-import { filter } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { Client } from '../../../models/client.model';
 import { Person } from '../../../models/person.model';
@@ -26,39 +25,10 @@ export class ProfileComponent implements OnInit {
     clients!: Client[];
     isImagePresent!: boolean;
     selectedImage!: File;
-    client: Client = {
-        id: "",
-        userType: 3,
-        image: {
-            data: "",
-            type: 0
-        },
-        person: {
-            name: "",
-            phone: "",
-            email: "",
-            address: ""
-        }
-    };
-    barber: Barber = {
-        id: "",
-        profilePicture: {
-            data: "",
-            type: 0
-        },
-        image: this.selectedImage,
-        about: "",
-        rating: 0,
-        person: {
-            name: "",
-            phone: "",
-            email: "",
-            address: ""
-        },
-        userType: 1
-    };
+    client: Client = new Client();
+    barber = new Barber;
     admin: User = {
-        name: "",
+        fullName: "",
         email: "",
         password: "",
         roles: []
@@ -77,40 +47,30 @@ export class ProfileComponent implements OnInit {
     ngOnInit(): void {
 
         this.getLogged();
-        console.log(this.isLogged)
-        console.log(this.userEmail)
+        this.getIsAdmin();
+        this.getIsBarber();
+        this.getIsClient();
         if (!this.isLogged) {
             this.router.navigate(['register']);
         } else {
             this.userEmail = this.tokenService.getUserEmail()!;
         }
-        this.getIsAdmin();
-        this.getIsBarber();
-        this.getIsClient();
-
-        console.log(this.isAdmin);
-        console.log(this.isBarber);
-        console.log(this.isClient);
 
         if (this.isAdmin) {
-            $("label[for='name']").remove();
-            $("label[for='phone']").remove();
-            $("label[for='address']").remove();
             this.userService.findAll().subscribe(users => {
                 this.admin = users.filter(u => u.email == this.userEmail)[0];
-                console.log("admin -> ", this.admin);
             });
-        } else if (this.isBarber) {
+        }
+        if (this.isBarber) {
             this.barberService.getBarbers().subscribe(barbers => {
                 this.barber = barbers.filter(b => b.person.email == this.userEmail)[0];
                 this.isImagePresent = this.barber.profilePicture ? true : false;
                 this.imageURL = this.barber.profilePicture.data;
-                console.log("barber -> ", this.barber);
             })
-        } else if (this.isClient) {
+        } else if (this.isClient || this.isAdmin) {
 
+            console.log("entrou no asdfsa")
             this.clientsService.findClients().subscribe(clients => {
-
                 if ((this.userEmail.split("@").length)! > 0) {
                     this.client = clients.filter(c => c.person.email == this.userEmail)[0];
                     this.isImagePresent = this.client.image ? true : false;
@@ -118,7 +78,6 @@ export class ProfileComponent implements OnInit {
                     console.log("cliente com @", this.client)
                 } else {
                     this.client = clients.filter(c => c.person.email == this.userEmail)[0];
-                    console.log(this.client)
                 }
             });
         }
@@ -128,18 +87,18 @@ export class ProfileComponent implements OnInit {
 
     onSubmit(): void {
 
-        if (this.selectedImage && this.selectedImage!.size > 1048576) {
+        if (this.selectedImage && this.selectedImage.size > 1048576) {
             alert("O arquivo que você anexou é muito grande. Por favor, selecione um arquivo menor.")
             this.selectedImage
             return;
         }
         const id = this.client.id;
         const barberID = this.barber.id;
-        const name = $("[name=userName]").val()!.toString()!;
-        const email = $("[name=userEmail]").val()!.toString()!;
-        const phone = $("[name=userPhone]").val()!.toString()!;
-        const address = $("[name=userAddress]").val()!.toString()!;
-        const about = $("[name=about]").val()!.toString()!;
+        const name = $("[name=userName]").val()?.toString()!;
+        const email = $("[name=userEmail]").val()?.toString()!;
+        const phone = $("[name=userPhone]").val()?.toString()!;
+        const address = $("[name=userAddress]").val()?.toString()!;
+        const about = $("[name=about]").val()?.toString()!;
         const person: Person = {
             name: name,
             email: email,
@@ -156,32 +115,39 @@ export class ProfileComponent implements OnInit {
         if (this.isClient) {
             this.clientsService.update(client).subscribe(client => {
                 console.log(client);
+                this.updatePicture(client.id, this.selectedImage);
             });
-            this.updatePicture(client.id, this.selectedImage);
         } else if (this.isBarber) {
             this.barberService.update(barber).subscribe(barber => {
                 console.log(barber);
+                this.updatePicture(barber.id, this.selectedImage);
             });
 
-            this.updatePicture(barber.id, this.selectedImage);
+        } else if (this.isAdmin) {
+            let id = "";
+            this.clientsService.findClients().subscribe(clients => {
+                const adminClient = clients.filter(c => c.person.email == this.admin.email)[0];
+                let newAdminClient = new Client(3, adminClient.person);
+                newAdminClient.id = adminClient.id
+                id = adminClient.id
+                this.clientsService.update(newAdminClient).subscribe(client => {
+                    this.updatePicture(id, this.selectedImage);
+                });
+            });
         }
     }
 
     updatePicture(id: string, file: File): void {
-        if (this.isClient) {
-            setTimeout(() => {
-                this.clientsService.uploadImage(id, file).subscribe(data => {
-                    alert("Cliente salvo com sucesso");
-                    window.location.reload();
-                })
-            }, 500);
+        if (this.isClient || this.isAdmin) {
+            this.clientsService.uploadImage(id, file).subscribe(data => {
+                alert("Cliente salvo com sucesso");
+                window.location.reload();
+            })
         } else if (this.isBarber) {
-            setTimeout(() => {
-                this.barberService.uploadImage(file).subscribe(data => {
-                    alert("Barbeiro salvo com sucesso");
-                    window.location.reload();
-                })
-            }, 500);
+            this.barberService.uploadImage(file).subscribe(data => {
+                alert("Barbeiro salvo com sucesso");
+                window.location.reload();
+            })
         }
     }
 

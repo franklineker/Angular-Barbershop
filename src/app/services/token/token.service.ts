@@ -30,16 +30,19 @@ export class TokenService {
     }
 
     getUserEmail(): string | null {
-        const token = this.getAccessToken();
-        const payload = token!.split('.')[1];
-        const payloadDecoded = buffer.Buffer.from(payload!, 'base64').toString(
-            'utf-8'
-        );
-        const values = JSON.parse(payloadDecoded);
-        const sub = values.username;
+        let email = "User email not found";
+        if (this.isLogged()) {
+            const token = this.getAccessToken();
+            const payload = token!.split('.')[1];
+            const payloadDecoded = buffer.Buffer.from(payload!, 'base64').toString(
+                'utf-8'
+            );
+            const values = JSON.parse(payloadDecoded);
+            const sub = values.username;
+            email = sub;
+        }
 
-        return sub;
-
+        return email;
     }
 
     clear(): void {

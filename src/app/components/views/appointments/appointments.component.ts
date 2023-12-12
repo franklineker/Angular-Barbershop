@@ -7,6 +7,7 @@ import { ClientsService } from 'src/app/services/clients/clients.service';
 import { Client } from 'src/app/models/client.model';
 import { BarbersService } from 'src/app/services/barbers/barbers.service';
 import { DeleteDialogComponent } from '../../templates/delete-dialog/delete-dialog.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-appointments',
@@ -26,7 +27,8 @@ export class AppointmentsComponent implements OnInit {
         private clientsService: ClientsService,
         private tokenService: TokenService,
         private barbersService: BarbersService,
-        private deleteDialogComponent: DeleteDialogComponent
+        private deleteDialogComponent: DeleteDialogComponent,
+        private datePipe: DatePipe
     ) { }
 
     ngOnInit(): void {
@@ -35,9 +37,20 @@ export class AppointmentsComponent implements OnInit {
         this.getIsBarber();
 
         this.appointmentsService.get().subscribe((appointments) => {
-            this.appointments = appointments;
+            this.appointments = appointments.map(appointment => {
+                const date = new Date(appointment.date);
+                const offSetMinutes = date.getTimezoneOffset();
+                const hours = parseInt(date.getHours().toString());
+                const minutes = parseInt(date.getMinutes().toString());
+                date.setHours(hours + offSetMinutes / 60);
+                date.setMinutes(minutes);
+                appointment.date = date.toString();
+                console.log(appointment.date)
+                appointment.formatedDate = this.datePipe.transform(appointment.date, "dd/MM/yyyy")!;
+                appointment.formatedHour = this.datePipe.transform(appointment.date, "HH:mm:ss")!;
+                return appointment;
+            });
             if (this.isAdmin) {
-                //do something here
             } else if (this.isClient) {
                 const email = this.tokenService.getUserEmail()!;
                 const handleClient = (client: Client) => {
@@ -59,7 +72,6 @@ export class AppointmentsComponent implements OnInit {
             }
 
             this.collapsedAppointments = new Array(this.appointments.length).fill(true);
-            console.log(this.collapsedAppointments)
         });
     }
 
@@ -85,12 +97,12 @@ export class AppointmentsComponent implements OnInit {
     }
 
     getAppointmentsByClientId(id: string): Appointment[] {
-        const clientAppointments = this.appointments.filter(appointment => appointment.clientID == id);
+        const clientAppointments = this.appointments.filter(appointment => appointment.client.id == id);
         return clientAppointments;
     }
 
     getAppointmentsByBarberId(id: string): Appointment[] {
-        const barberAppointments = this.appointments.filter(appointment => appointment.barberID == id);
+        const barberAppointments = this.appointments.filter(appointment => appointment.barber.id == id);
         return barberAppointments;
     }
 }

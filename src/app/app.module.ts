@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -24,9 +25,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { ObserversModule } from '@angular/cdk/observers';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportsComponent } from './components/views/reports/reports.component';
 import { ChairsComponent } from './components/views/chairs/chairs.component';
 import { AgmCoreModule } from '@agm/core';
@@ -77,6 +78,7 @@ import { RegisterComponent } from './components/views/register/register.componen
         ObserversModule,
         MatSelectModule,
         FormsModule,
+        ReactiveFormsModule,
         AgmCoreModule.forRoot({
             apiKey: 'AIzaSyDWkpBmAQ7XRpusU2YdxjKNxFL0n97ppq0',
         }),
@@ -90,6 +92,7 @@ import { RegisterComponent } from './components/views/register/register.componen
         DeleteDialogComponent,
         ProfileComponent,
         HeaderComponent,
+        DatePipe,
         { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
     ],
     bootstrap: [AppComponent],

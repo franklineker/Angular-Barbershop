@@ -1,8 +1,11 @@
+import { ClientsService } from 'src/app/services/clients/clients.service';
+import { Client } from 'src/app/models/client.model';
+import { TokenService } from './../../../services/token/token.service';
 import { BarbersService } from './../../../services/barbers/barbers.service';
 import { Barber } from '../../../models/barber.model';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { DeleteDialogComponent } from '../../templates/delete-dialog/delete-dialog.component';
-import { environment } from 'src/environments/environment';
+import Oauth2Service from 'src/app/services/oauth2/oauth2.service';
 
 @Component({
     selector: 'app-barbers',
@@ -12,26 +15,72 @@ import { environment } from 'src/environments/environment';
 export class BarbersComponent implements OnInit {
     selectedImage!: File;
     barbers!: Barber[];
-    barber: Barber = {
-        id: '',
-        profilePicture: { data: '', type: 0 },
-        userType: 1,
-        person: { name: '', email: '', phone: '', address: '' },
-        rating: 0,
-        about: '',
-        image: this.selectedImage,
-    };
+    barber = new Barber;
+    selecetedBarberToRate!: Barber;
+    stars = [{ id: "star-1", class: "fa-regular" }, { id: "star-2", class: "fa-regular" }, { id: "star-3", class: "fa-regular" }, { id: "star-4", class: "fa-regular" }, { id: "star-5", class: "fa-regular" }];
+    display = { id: "", class: "", boolean: false };
+    formStates: { [barberId: string]: boolean } = {};
     submitType!: string;
+    isLogged!: boolean;
+    isAdmin!: boolean;
+    rating!: number;
+    isFaRegular = true;
+    isFaSolid = false;
+    loggedUserEmail!: string;
+    client!: Client;
+
+    @ViewChild('ratingForm') ratingForm!: ElementRef;
 
     constructor(
         private barberService: BarbersService,
-        private deleteDialogComponent: DeleteDialogComponent
+        private deleteDialogComponent: DeleteDialogComponent,
+        private tokenService: TokenService,
+        private oAuth2Service: Oauth2Service,
+        private clientsService: ClientsService,
+        private el: ElementRef,
+        private renderer2: Renderer2
     ) { }
 
     ngOnInit(): void {
+        this.loggedUserEmail = this.tokenService.getUserEmail()!;
+        this.isLogged = this.tokenService.isLogged();
+        this.isAdmin = this.tokenService.isAdmin();
+        this.clientsService.getClientByEmail(this.loggedUserEmail).subscribe((client) => {
+            this.client = client!;
+        });
         this.barberService.getBarbers().subscribe((barbers) => {
             this.barbers = barbers;
         });
+    }
+
+    toggleRatingBox(barberId: string): void {
+        this.stars.forEach((star, index) => {
+            star.class = "fa-regular";
+        })
+        this.formStates[barberId] = !this.formStates[barberId];
+    }
+
+    getRating(event: any): void {
+        const id: string = event.target.id;
+        const rating = parseInt(id.split('-')[1]);
+
+        this.stars.forEach((star, index) => {
+            star.class = index < rating ? "fa-solid" : "fa-regular";
+        });
+
+        this.rating = rating;
+    }
+
+    rateBarber(barberID: string): void {
+        if (this.loggedUserEmail) {
+            this.barberService.rateBarber(barberID, { clientId: this.client!.id, rating: this.rating }).subscribe(data => {
+                alert("Obrigado!");
+                window.location.reload();
+            })
+        } else {
+            this.oAuth2Service.onLogin();
+        }
+
     }
 
     onSelectedImage(event: any) {
@@ -79,14 +128,12 @@ export class BarbersComponent implements OnInit {
             this.barberService.createBarber(barber).subscribe((data) => {
                 this.barberService.createOrUpdateResponse = data;
                 barber.id = data.id;
-                console.log(data);
             });
 
             this.uploadImage(this.selectedImage);
         } else if (this.submitType == 'editBarber') {
             this.barber.person.name = name;
             this.barber.person.email = email;
-            const id = this.barber.id;
 
             if (!this.selectedImage) {
                 const base64 = this.barber.profilePicture.data;
@@ -99,24 +146,21 @@ export class BarbersComponent implements OnInit {
             }
 
             let barber = new Barber(1, about, this.selectedImage, this.barber.person);
+            barber.id = this.barber.id
 
             this.barberService.update(barber).subscribe((data) => {
                 this.barberService.createOrUpdateResponse = data;
-                console.log(data);
-                barber.id = id;
+                this.uploadImage(this.selectedImage);
             });
 
-            this.uploadImage(this.selectedImage);
         }
     }
 
     uploadImage(file: File): void {
-        setTimeout(() => {
-            this.barberService.uploadImage(file).subscribe((data) => {
-                alert(`Corte salvo com sucesso!`);
-                window.location.reload();
-            });
-        }, 500);
+        this.barberService.uploadImage(file).subscribe((data) => {
+            alert(`Barbeiro salvo com sucesso!`);
+            window.location.reload();
+        });
     }
 
     dataURItoBlob(dataURI: any) {

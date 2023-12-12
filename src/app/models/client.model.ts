@@ -10,7 +10,12 @@ export class Client {
 
     constructor(
         public userType: Number = 3,
-        public person: Person
+        public person: Person = {
+            name: "",
+            phone: "",
+            email: "",
+            address: ""
+        }
     ) { }
 
 }

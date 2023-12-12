@@ -5,13 +5,17 @@
 .book-button {
     position: relative;
     background-color: #FFCE2E;
-    border-radius: 10px;
     width: 130px;
     height: 38px;
     align-self: center;
     margin-top: 10px;
-    font-size: 20px;
+    font-size: 16px;
 
+}
+
+.button-disabled {
+    background: rgba(0, 0, 0, 0.7) !important;
+    color: white !important;
 }
 
 .hour-wrapper {
@@ -64,7 +68,8 @@
 
 }
 
-.my-select {
+.my-select,
+.my-select::after {
     align-self: flex-end;
     background-color: #FFCE2E;
     border-radius: 10px;
@@ -72,7 +77,7 @@
     text-align: center;
     width: 80px;
     right: 0;
-
+    overflow: scroll;
 }
 
 option {

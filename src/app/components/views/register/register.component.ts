@@ -51,7 +51,7 @@ export class RegisterComponent implements OnInit {
         this.userService.create(user).subscribe(data => {
             this.clientsService.create(client).subscribe(data => console.log("cliente criado."));
             alert("Usuário criado com sucesso!");
-            this.router.navigate(['']);
+            this.oauth2sevice.onLogin();
         })
 
     }

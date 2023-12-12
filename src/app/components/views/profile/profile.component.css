@@ -12,12 +12,12 @@ h1 {
 
 form {
     display: flex;
-    width: 370px;
+    width: 340px;
     position: relative;
     flex-direction: column;
     background: rgba(0, 0, 0, 0.7);
     height: 530px;
-    padding: 10px 30px;
+    padding: 10px 7px;
     color: white;
 
 }

@@ -4,6 +4,7 @@ import { ChairsService } from 'src/app/services/chairs/chairs.service';
 import { BarbersService } from 'src/app/services/barbers/barbers.service';
 import { Barber } from 'src/app/models/barber.model';
 import { DeleteDialogComponent } from '../../templates/delete-dialog/delete-dialog.component';
+import { DatePipe } from "@angular/common";
 
 @Component({
     selector: 'app-chairs',
@@ -13,19 +14,19 @@ import { DeleteDialogComponent } from '../../templates/delete-dialog/delete-dial
 export class ChairsComponent implements OnInit {
 
     chairs!: Chair[];
+    selectedStartDate!: Date;
+    selectedEndDate!: Date;
     idArray!: Number[];
-    barber!: Barber;
-    chair: Chair = {
-        barberName: "",
-        startDate: "",
-        endDate: ""
-    };
+    barbers!: Barber[];
+    barber = new Barber;
+    chair = new Chair;
     submitType!: string;
 
     constructor(
         private chairService: ChairsService,
         private barbersService: BarbersService,
-        private deleteDialog: DeleteDialogComponent
+        private deleteDialog: DeleteDialogComponent,
+        private datePipe: DatePipe
     ) { }
 
     ngOnInit(): void {
@@ -34,38 +35,37 @@ export class ChairsComponent implements OnInit {
             this.chairs = chairs.map(c => {
                 c.customId = index
                 index++
+                c.formatedStartDate = this.datePipe.transform(c.startDate, "dd/MM/yyyy")!;
+                c.formatedEndDate = this.datePipe.transform(c.endDate, "dd/MM/yyyy")!;
                 return c
             })
-            console.log(this.chairs)
+        })
+        this.barbersService.getBarbers().subscribe(barbers => {
+            this.barbers = barbers
         })
     }
 
     saveChair(): void {
-        const barberName = $("#barberName").val()?.toString()!;
-        const startDate = $("#startDate").val()?.toString()!;
-        const endDate = $("#endDate").val()?.toString()!;
-        const chair: Chair = {
-            barberName: barberName,
-            startDate: startDate,
-            endDate: endDate
-
+        if (!this.chair.barber.person.name) {
+            alert("Por favor, selecione um barbeiro para contiuar");
+            return;
+        } else if (!this.chair.startDate) {
+            alert("Por favor, selecione uma data início para contiuar");
+            return;
+        } else if (!this.chair.endDate) {
+            alert("Por favor, selecione uma data fim para contiuar");
+            return;
         }
-
-        console.log(this.submitType)
         if (this.submitType == "createChair") {
-            console.log("entrou no create")
-            this.chairService.createChair(chair).subscribe(chair => {
-                console.log(chair);
+            this.chairService.createChair(this.chair).subscribe(chair => {
                 alert("Cadeira salva com sucesso!");
                 window.location.reload();
             })
         } else if (this.submitType == "editChair") {
             this.chairService.updateChair(this.chair).subscribe(chair => {
-                console.log(chair);
                 alert("Cadeira salva com sucesso!");
                 window.location.reload();
             })
-            console.log("entrou no edit", this.chair.id)
         }
 
     }
@@ -80,6 +80,7 @@ export class ChairsComponent implements OnInit {
     }
 
     openForm(event: any, chair: Chair): void {
+        this.chair = new Chair();
         const buttonName = event.currentTarget.getAttribute('name');
 
         if (buttonName == 'editChair') {
@@ -97,6 +98,8 @@ export class ChairsComponent implements OnInit {
                 .find("[type='number']")
                 .val('');
             document.getElementById('myForm')!.style.display = 'block';
+            this.chair.startDate = undefined;
+            this.chair.endDate = undefined;
         }
     }
 }

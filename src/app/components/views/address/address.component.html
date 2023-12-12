@@ -1,4 +1,32 @@
-<h1 class="text-white d-flex justify-content-center mt-3">Localização</h1>
-<agm-map id="map" [latitude]="lat" [longitude]="lng" [zoom]="17">
-  <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
-</agm-map>
+<div class="address-wrapper">
+    <h1 class="text-white d-flex justify-content-center mt-3">Localização</h1>
+    <div class="address mb-3">
+        <span class="color-white">
+            {{home.address.street}},
+            {{home.address.number}},
+            {{home.address.neighborhood}},
+            {{home.address.city}} - {{home.address.state}}
+        </span>
+        <i class="fa-regular fa-pen-to-square myYellow" (click)="toggleForm()" *ngIf="isAdmin"></i>
+    </div>
+    <agm-map id="map" [latitude]="lat" [longitude]="lng" [zoom]="17">
+        <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+    </agm-map>
+    <form (submit)="setAddress()" *ngIf="isFormActive">
+        <h2 class="color-white text-center">Editar endereço</h2>
+        <label class=" color-white" for="street">Rua</label>
+        <input type="text" name="street" placeholder="Digita a rua..." [(ngModel)]="home.address.street">
+        <label class="color-white" for="number">Número</label>
+        <input type="text" name="number" placeholder="Digite o número..." [(ngModel)]="home.address.number">
+        <label class="color-white" for="neighborhood">Bairro</label>
+        <input type="text" name="neighborhood" placeholder="Digita o bairro..." [(ngModel)]="home.address.neighborhood">
+        <label class="color-white" for="city">cidade</label>
+        <input type="text" name="city" placeholder="Digita a cidade" [(ngModel)]="home.address.city">
+        <label class="color-white" for="state">UF</label>
+        <input type="text" name="state" placeholder="Digita a sigla do estado..." [(ngModel)]="home.address.state">
+        <div class="d-flex justify-content-around mt-4">
+            <button class="btn btn-danger" (click)="toggleForm()">Cancelar</button>
+            <button type="submit" class="btn btn-warning">Salvar</button>
+        </div>
+    </form>
+</div>

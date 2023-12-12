@@ -2,36 +2,36 @@
 
 html,
 body {
-  height: 100%;
-  background-color: black;
-  margin: 0
+    height: 100%;
+    background-color: black;
+    margin: 0
 }
 
 body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  box-sizing: border-box;
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+    box-sizing: border-box;
 }
 
 app-root {
-  display: grid;
-  grid-template-areas:
-    "app-header"
-    "app-main"
-    "app-footer"
+    display: grid;
+    grid-template-areas:
+        "app-header"
+        "app-main"
+        "app-footer"
 
 }
 
 @import "~bootstrap/dist/css/bootstrap.css";
 
 .color-white {
-  color: white;
+    color: white;
 }
 
 .myYellow {
-  color: #FFCE2E;
+    color: #FFCE2E;
 }
 
 .text-justify {
-  text-align: justify;
+    text-align: justify;
 }
